@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Contacts</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb); /* Kept as gray, not blue */
+            color: #1f2937;
+            scroll-behavior: smooth;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0ea5e9; /* Sky-500 */
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #38bdf8, #0284c7); /* Sky blue gradient */
+            border-radius: 2px;
+        }
+
+        /* Section Heading */
+        .section-heading {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1f2937; /* Kept as gray, not blue */
+            margin-bottom: 1.5rem;
+        }
+
+        /* Hospital Card */
+        .hospital-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .hospital-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(45deg, #e0f2fe, #e0f2fe); /* Sky-100 solid */
+        }
+
+        .hospital-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 4px solid #38bdf8; /* Sky-400 */
+        }
+
+        .hospital-card-content {
+            padding: 1.5rem;
+        }
+
+        .hospital-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0ea5e9; /* Sky-500 */
+            margin-bottom: 0.75rem;
+        }
+
+        .hospital-card p {
+            font-size: 1rem;
+            color: #374151; /* Kept as gray, not blue */
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            .section-heading {
+                font-size: 1.75rem;
+            }
+            .hospital-card h3 {
+                font-size: 1.25rem;
+            }
+            .hospital-card p {
+                font-size: 0.875rem;
+            }
+            .hospital-card img {
+                height: 150px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hospital-card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Emergency Contacts</h1>
+        <div class="space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="section-heading">Top Hospitals</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Hospital 1 -->
+                    <div class="hospital-card" style="animation-delay: 0.1s;">
+                        <img src="https://alwaridmedicaltourism.com/wp-content/uploads/2023/07/manipal_hospital_bangalore.jpg" alt="Manipal Hospital">
+                        <div class="hospital-card-content">
+                            <h3>Manipal Hospital</h3>
+                            <p><strong>Address:</strong> 123 Main Street, Bangalore, 560001</p>
+                            <p><strong>Contact:</strong> 080 1234 5678</p>
+                        </div>
+                    </div>
+                    <!-- Hospital 2 -->
+                    <div class="hospital-card" style="animation-delay: 0.2s;">
+                        <img src="https://d1ea147o02h74h.cloudfront.net/apollo_hospitals_bangalore1.jpg" alt="Apollo Hospital">
+                        <div class="hospital-card-content">
+                            <h3>Apollo Hospital</h3>
+                            <p><strong>Address:</strong> 456 Another Road, Bangalore, 560002</p>
+                            <p><strong>Contact:</strong> 080 8765 4321</p>
+                        </div>
+                    </div>
+                    <!-- Hospital 3 -->
+                    <div class="hospital-card" style="animation-delay: 0.3s;">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQcLSSbTzIlWcHgEr4KtVEFVXc0QALq8mkCQ&s" alt="Sakra World Hospital">
+                        <div class="hospital-card-content">
+                            <h3>Sakra World Hospital</h3>
+                            <p><strong>Address:</strong> 789 Third Avenue, Bangalore, 560003</p>
+                            <p><strong>Contact:</strong> 080 5555 5555</p>
+                        </div>
+                    </div>
+                    <!-- Hospital 4 -->
+                    <div class="hospital-card" style="animation-delay: 0.4s;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Mazumdar_Shaw_Medical_Center%2C_Narayana_Health_City%2C_Bangalore.jpg" alt="Narayana Health">
+                        <div class="hospital-card-content">
+                            <h3>Narayana Health</h3>
+                            <p><strong>Address:</strong> 987 Fourth Street, Bangalore, 560004</p>
+                            <p><strong>Contact:</strong> 080 9999 9999</p>
+                        </div>
+                    </div>
+                    <!-- Hospital 5 -->
+                    <div class="hospital-card" style="animation-delay: 0.5s;">
+                        <img src="https://medsurgeindia.com/wp-content/uploads/2020/03/Columbia-Asia-Hospital-Bangalore.jpg" alt="Columbia Asia Hospital">
+                        <div class="hospital-card-content">
+                            <h3>Columbia Asia Hospital</h3>
+                            <p><strong>Address:</strong> 321 Fifth Street, Bangalore, 560005</p>
+                            <p><strong>Contact:</strong> 080 4444 4444</p>
+                        </div>
+                    </div>
+                    <!-- Hospital 6 -->
+                    <div class="hospital-card" style="animation-delay: 0.6s;">
+                        <img src="https://img.bookimed.com/clinic_webp/b10635840fb80.webp" alt="Fortis Hospital">
+                        <div class="hospital-card-content">
+                            <h3>Fortis Hospital</h3>
+                            <p><strong>Address:</strong> 654 Sixth Avenue, Bangalore, 560006</p>
+                            <p><strong>Contact:</strong> 080 3333 3333</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Scroll Animation -->
+    <script>
+        // Intersection Observer for fade-in on scroll
+        const cards = document.querySelectorAll('.hospital-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.5s ease-out forwards';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => observer.observe(card));
+    </script>
+</body>
+</html>

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Cure Dashboard</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #e6f0ff);
+            color: #1f2937;
+            scroll-behavior: smooth;
+        }
+
+        /* Hero Section with Parallax Effect */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            animation: parallax 10s infinite linear;
+        }
+
+        @keyframes parallax {
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 50% 50%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .hero-content {
+            z-index: 2;
+            text-align: center;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        /* Modern Header Bar with Glass Morphism and Scroll Animation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: #1f2937;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #3b82f6;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            padding: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        /* Card Hover Animation */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Button Animation */
+        .btn {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            transform: scale(1.05);
+        }
+
+        /* Section Title Animation */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e40af;
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            border-radius: 2px;
+        }
+
+        /* Chatbot Styling */
+        .chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            color: #ffffff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .chat-icon:hover {
+            transform: scale(1.1);
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+        }
+
+        .chat-popup {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 320px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 100;
+            overflow: hidden;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        .chat-popup.open {
+            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .chat-header {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            color: #ffffff;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header .close-chat {
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-header .close-chat:hover {
+            transform: scale(1.2);
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .chat-message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chat-message.user {
+            background: #3b82f6;
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .chat-message.bot {
+            background: #f3f4f6;
+            color: #1f2937;
+            align-self: flex-start;
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .chat-footer {
+            display: flex;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .chat-send-btn {
+            background: #3b82f6;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .chat-send-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div>
+                <a href="#" class="text-2xl font-bold text-gray-800">Health Cure</a>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#main" class="text-gray-700 hover:text-blue-600">Home</a>
+                <a href="predict" class="text-gray-700 hover:text-blue-600">Disease Predictor</a>
+                <a href="#about" class="text-gray-700 hover:text-blue-600">About</a>
+                <a href="#services" class="text-gray-700 hover:text-blue-600">Services</a>
+                <a href="#contact" class="text-gray-700 hover:text-blue-600">Contact</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-gray-800 focus:outline-none">☰</button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu">
+            <a href="#main" class="text-gray-700 hover:text-blue-600 py-2">Home</a>
+            <a href="predict" class="text-gray-700 hover:text-blue-600 py-2">Disease Predictor</a>
+            <a href="#about" class="text-gray-700 hover:text-blue-600 py-2">About</a>
+            <a href="#services" class="text-gray-700 hover:text-blue-600 py-2">Services</a>
+            <a href="#contact" class="text-gray-700 hover:text-blue-600 py-2">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div id="main" class="hero-section">
+        <div class="hero-content">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Welcome, {{ user.username }}!</h1>
+            <p class="text-lg md:text-xl text-white mb-6">Empowering you with knowledge and care.</p>
+            <form action="/predict" method="POST">
+                <button type="submit" class="btn">Health Checkup</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <!-- Health Information Section -->
+        <section id="predict" class="mb-16 fade-in">
+            <h2 class="section-title">Health Information</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Your Profile</h3>
+                    <p><strong>Name:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Age:</strong> {{ health_info.profile.age }}</p>
+                    <p><strong>Gender:</strong> {{ health_info.profile.gender }}</p>
+                    <p><strong>Medical Conditions:</strong> {{ health_info.profile.conditions }}</p>
+                    <button class="btn mt-4" onclick="toggleEditForm()">Edit</button>
+                </div>
+                <div id="editForm" class="card p-6 hidden">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Edit Your Profile</h3>
+                    <form action="/update-profile" method="POST" class="space-y-4">
+                        <div>
+                            <label for="name" class="block font-semibold">Name</label>
+                            <input type="text" id="name" name="name" value="{{ user.username }}" class="w-full p-2 border rounded-lg" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block font-semibold">Email</label>
+                            <input type="email" id="email" name="email" value="{{ user.email }}" class="w-full p-2 border rounded-lg" required>
+                        </div>
+                        <div>
+                            <label for="age" class="block font-semibold">Age</label>
+                            <input type="number" id="age" name="age" value="{{ health_info.profile.age }}" class="w-full p-2 border rounded-lg" required>
+                        </div>
+                        <div>
+                            <label for="gender" class="block font-semibold">Gender</label>
+                            <select id="gender" name="gender" class="w-full p-2 border rounded-lg" required>
+                                <option value="Male" {% if health_info.profile.gender == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if health_info.profile.gender == 'Female' %}selected{% endif %}>Female</option>
+                                <option value="Other" {% if health_info.profile.gender == 'Other' %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="conditions" class="block font-semibold">Medical Conditions</label>
+                            <textarea id="conditions" name="conditions" class="w-full p-2 border rounded-lg">{{ health_info.profile.conditions }}</textarea>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button type="submit" class="btn">Save</button>
+                            <button type="button" class="btn bg-gray-500 hover:bg-gray-600" onclick="toggleEditForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <a href="{{ url_for('common_diseases') }}" class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Common Diseases</h3>
+                    <p class="text-sm text-gray-600">Learn about symptoms, causes, and treatments.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Emergency Information Section -->
+        <section class="mb-16 fade-in">
+            <h2 class="section-title">Emergency Information</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <a href="{{ url_for('emergency_contacts') }}" class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Emergency Contacts</h3>
+                    <p class="text-sm text-gray-600">Find local emergency contact numbers.</p>
+                </a>
+                <a href="{{ url_for('first_aid_tips') }}" class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">First Aid Tips</h3>
+                    <p class="text-sm text-gray-600">Basic first aid instructions for emergencies.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="mb-16 fade-in">
+            <h2 class="section-title">About Us</h2>
+            <div class="card p-6">
+                <p class="text-lg text-gray-700 leading-relaxed">We are dedicated to providing the best health information and support through our innovative project. Our goal is to empower users with reliable health insights and assist them in managing their well-being effectively.</p>
+                <p class="text-lg text-gray-700 leading-relaxed mt-4">We are <strong>Darshan M, Dhavan DJ, Gowtham</strong> and <strong>Manibharathi</strong>, creators of this final year project during our 8th semester at City Engineering College.</p>
+                <p class="text-lg text-gray-700 leading-relaxed mt-4">Our project bridges the gap between users and essential health information, making it accessible at your fingertips.</p>
+                <p class="text-lg text-gray-700 leading-relaxed mt-4">Thank you for exploring our work, and we look forward to continually improving our offerings.</p>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="mb-16 fade-in">
+            <h2 class="section-title">Our Services</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Personalized Health Assessment</h3>
+                    <p class="text-sm text-gray-600">Receive tailored health insights based on your data.</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Disease Prediction</h3>
+                    <p class="text-sm text-gray-600">Predict potential health issues and get treatment options.</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Emergency Contact Info</h3>
+                    <p class="text-sm text-gray-600">Access crucial emergency contacts instantly.</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">First Aid Tips</h3>
+                    <p class="text-sm text-gray-600">Learn essential first aid techniques.</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Symptom Checker</h3>
+                    <p class="text-sm text-gray-600">Evaluate symptoms and get recommendations.</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Health Risk Assessment</h3>
+                    <p class="text-sm text-gray-600">Assess risks based on lifestyle and history.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="mb-16 fade-in">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="card p-6">
+                <p class="text-lg text-gray-700 mb-4">For inquiries or support, reach out to us:</p>
+                <div class="space-y-4">
+                    <p><strong>Email:</strong> <a href="mailto:support@healthcure.com" class="text-blue-600 hover:underline">support@healthcure.com</a></p>
+                    <p><strong>Phone:</strong> +91 12345 67890</p>
+                    <p><strong>Address:</strong> #14, JP nagar, Kanakapura Road, Bengaluru, KA-560078</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center py-6">
+            <p class="no-copy">© 2024 Health Cure. All rights reserved.</p>
+            <p class="no-copy mt-2">Designed by Darshan M, Dhavan DJ, Gowtham, and Manibharathi.</p>
+            <marquee behavior="scroll" direction="left" class="mt-4 text-yellow-200">This is a Healthcure website for a final year project by CEC-ISE students.</marquee>
+        </footer>
+    </div>
+
+    <!-- Chatbot Icon -->
+    <div class="chat-icon" id="chat-toggle">💬</div>
+
+    <!-- Chatbot Popup -->
+    <div class="chat-popup" id="chat-popup">
+        <div class="chat-header">
+            <span>Health Assistant</span>
+            <span class="close-chat" id="close-chat">×</span>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="chat-message bot">Hello! How can I assist you today?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Type your message...">
+            <button class="chat-send-btn" id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Edit Form Toggle
+        function toggleEditForm() {
+            const form = document.getElementById('editForm');
+            form.classList.toggle('hidden');
+        }
+
+        // Header Scroll Animation
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Fade-in on Scroll
+        const fadeIns = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = `${Math.random() * 0.3}s`;
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeIns.forEach(element => observer.observe(element));
+
+        // Chatbot Functionality
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatPopup = document.getElementById('chat-popup');
+        const closeChat = document.getElementById('close-chat');
+        const chatBody = document.getElementById('chat-body');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Toggle Chat Popup
+        chatToggle.addEventListener('click', () => {
+            chatPopup.classList.toggle('open');
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatPopup.classList.remove('open');
+        });
+
+        // OpenRouter API configuration
+        const API_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
+        const API_KEY = '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'; // Your key
+        const YOUR_SITE_URL = 'http://127.0.0.1:5000'; // Match your local server
+        const YOUR_SITE_NAME = 'Healthcare Bot'; // Match your header
+
+        // Static fallback responses for quick replies
+        const fallbackResponses = {
+            "hi im feeling sick": "I’m sorry to hear that. Can you describe your symptoms?",
+            "headache": "Try resting and drinking water. Consult a doctor if it persists.",
+            "fever": "Rest, stay hydrated, and monitor your temperature. Seek medical help if it exceeds 100.4°F (38°C).",
+            "hello": "Hi! How can I assist you with your health today?"
+        };
+
+        // Send Message with OpenRouter API
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                // User message
+                const userMessage = document.createElement('div');
+                userMessage.className = 'chat-message user';
+                userMessage.textContent = message;
+                chatBody.appendChild(userMessage);
+
+                // Add loading indicator
+                const loadingMessage = document.createElement('div');
+                loadingMessage.className = 'chat-message bot';
+                loadingMessage.textContent = 'Thinking...';
+                chatBody.appendChild(loadingMessage);
+                chatBody.scrollTop = chatBody.scrollHeight;
+
+                // Check for quick fallback response
+                const lowerMessage = message.toLowerCase();
+                if (fallbackResponses[lowerMessage]) {
+                    setTimeout(() => { // Simulate instant response
+                        loadingMessage.remove();
+                        const botMessage = document.createElement('div');
+                        botMessage.className = 'chat-message bot';
+                        botMessage.textContent = fallbackResponses[lowerMessage];
+                        chatBody.appendChild(botMessage);
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                    }, 100); // Minimal delay for smoothness
+                } else {
+                    try {
+                        // Use a faster model (e.g., LLaMA 3.1 8B Instruct)
+                        const response = await fetch(API_ENDPOINT, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${API_KEY}`,
+                                'HTTP-Referer': YOUR_SITE_URL,
+                                'X-Title': YOUR_SITE_NAME
+                            },
+                            body: JSON.stringify({
+                                model: 'meta-llama/llama-3.1-8b-instruct:free', // Faster, free model
+                                messages: [
+                                    {
+                                        role: 'system',
+                                        content: 'You are a health chatbot. Provide helpful and accurate responses to user queries about health.'
+                                    },
+                                    {
+                                        role: 'user',
+                                        content: message // Simplified payload
+                                    }
+                                ],
+                                max_tokens: 200 // Limit response length for speed
+                            })
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        const botReply = data.choices[0].message.content || 'Sorry, I couldn’t process that.';
+
+                        // Remove loading and show response
+                        loadingMessage.remove();
+                        const botMessage = document.createElement('div');
+                        botMessage.className = 'chat-message bot';
+                        botMessage.textContent = botReply;
+                        chatBody.appendChild(botMessage);
+                    } catch (error) {
+                        loadingMessage.remove();
+                        const botMessage = document.createElement('div');
+                        botMessage.className = 'chat-message bot';
+                        botMessage.textContent = fallbackResponses[lowerMessage] || `Sorry, something went wrong: ${error.message}.`;
+                        chatBody.appendChild(botMessage);
+                        console.error('Error:', error);
+                    }
+                }
+
+                chatInput.value = '';
+                chatBody.scrollTop = chatBody.scrollHeight; // Scroll to bottom
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .input-field:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .link {
+            color: rgba(255, 255, 255, 0.8);
+            transition: color 0.3s ease;
+        }
+
+        .link:hover {
+            color: #ffffff;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .radio-label:hover {
+            color: #ffffff;
+        }
+
+        .radio-input {
+            margin-right: 0.5rem;
+            accent-color: #667eea;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-effect">
+        <h2 class="text-center text-3xl font-bold text-white mb-6">Sign Up</h2>
+        <form method="POST" action="/signup">
+            <!-- Username Field -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-white mb-2" for="username">Username</label>
+                <input type="text" id="username" name="username" class="input-field w-full" placeholder="Enter your username" required>
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-white mb-2" for="email">Email</label>
+                <input type="email" id="email" name="email" class="input-field w-full" placeholder="Enter your email" required>
+            </div>
+
+            <!-- Age Field -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-white mb-2" for="age">Age</label>
+                <input type="number" id="age" name="age" class="input-field w-full" placeholder="Enter your age" required>
+            </div>
+
+            <!-- Gender Field -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-white mb-2">Gender</label>
+                <div class="flex items-center space-x-4">
+                    <label class="radio-label">
+                        <input type="radio" class="radio-input" id="male" name="gender" value="Male">
+                        Male
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" class="radio-input" id="female" name="gender" value="Female">
+                        Female
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" class="radio-input" id="other" name="gender" value="Other">
+                        Other
+                    </label>
+                </div>
+            </div>
+
+            <!-- Medical Conditions Field -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-white mb-2" for="medical_conditions">Medical Conditions</label>
+                <textarea id="medical_conditions" name="medical_conditions" class="input-field w-full" placeholder="Enter any medical conditions"></textarea>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-white mb-2" for="password">Password</label>
+                <input type="password" id="password" name="password" class="input-field w-full" placeholder="Enter your password" required>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-between">
+                <button type="submit" class="btn w-full">Sign Up</button>
+            </div>
+
+            <!-- Login Link -->
+            <div class="mt-4 text-center">
+                <a href="/login" class="link">Already have an account? Log in</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

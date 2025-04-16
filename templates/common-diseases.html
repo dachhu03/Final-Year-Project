@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Diseases</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            color: #1f2937;
+            scroll-behavior: smooth;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Heading */
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0ea5e9;
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg,#38bdf8, #0284c7);
+            border-radius: 2px;
+        }
+
+        /* Disease Card */
+        .disease-card {
+            background: linear-gradient(45deg, #ffffff, #f9fafb);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .disease-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(45deg, #e0f2fe, #e0f2fe);
+        }
+
+        /* Disease Heading */
+        .disease-heading {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #a03646;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Disease Description */
+        .disease-description {
+            font-size: 1.125rem;
+            font-style: italic;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+
+        /* List Items */
+        .disease-list {
+            font-size: 1rem;
+            color: #1f2937;
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+
+        .disease-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 640px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            .disease-card {
+                padding: 1.5rem;
+            }
+            .disease-heading {
+                font-size: 1.5rem;
+            }
+            .disease-description {
+                font-size: 1rem;
+            }
+            .disease-list {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Common Diseases</h1>
+        <div class="space-y-6">
+            <!-- Diabetes -->
+            <div class="disease-card" style="animation-delay: 0.1s;">
+                <h2 class="disease-heading">Diabetes</h2>
+                <p class="disease-description">Diabetes is a chronic condition characterized by high levels of sugar (glucose) in the blood.</p>
+                <ul class="disease-list">
+                    <li>Symptoms: Increased thirst, frequent urination, extreme hunger, unexplained weight loss, fatigue.</li>
+                    <li>Causes: Genetic factors, lifestyle choices, and certain health conditions.</li>
+                    <li>Treatment: Medication, lifestyle changes, insulin therapy.</li>
+                </ul>
+            </div>
+
+            <!-- Hypertension -->
+            <div class="disease-card" style="animation-delay: 0.2s;">
+                <h2 class="disease-heading">Hypertension</h2>
+                <p class="disease-description">Hypertension, or high blood pressure, is a condition in which the force of the blood against the artery walls is too high.</p>
+                <ul class="disease-list">
+                    <li>Symptoms: Often asymptomatic, but can include headaches, shortness of breath, and nosebleeds.</li>
+                    <li>Causes: Poor diet, lack of exercise, obesity, genetic factors, stress.</li>
+                    <li>Treatment: Lifestyle changes, medication.</li>
+                </ul>
+            </div>
+
+            <!-- Cold -->
+            <div class="disease-card" style="animation-delay: 0.3s;">
+                <h2 class="disease-heading">Cold</h2>
+                <p class="disease-description">The common cold is a viral infection of your nose and throat (upper respiratory tract).</p>
+                <ul class="disease-list">
+                    <li>Symptoms: Runny or stuffy nose, sore throat, cough, congestion, slight body aches, sneezing.</li>
+                    <li>Causes: Various viruses, most commonly rhinoviruses.</li>
+                    <li>Treatment: Rest, fluids, over-the-counter cold remedies.</li>
+                </ul>
+            </div>
+
+            <!-- Headache -->
+            <div class="disease-card" style="animation-delay: 0.4s;">
+                <h2 class="disease-heading">Headache</h2>
+                <p class="disease-description">A headache is pain in any region of the head. It may occur on one or both sides of the head.</p>
+                <ul class="disease-list">
+                    <li>Symptoms: Throbbing, sharp, or dull pain, sensitivity to light or sound, nausea.</li>
+                    <li>Causes: Stress, certain foods, alcohol, lack of sleep, underlying health conditions.</li>
+                    <li>Treatment: Pain relievers, rest, hydration, stress management.</li>
+                </ul>
+            </div>
+
+            <!-- Lower Back Pain -->
+            <div class="disease-card" style="animation-delay: 0.5s;">
+                <h2 class="disease-heading">Lower Back Pain</h2>
+                <p class="disease-description">Lower back pain is a common condition that affects the lower portion of the spine.</p>
+                <ul class="disease-list">
+                    <li>Symptoms: Muscle ache, shooting or stabbing pain, pain that radiates down the leg, limited range of motion.</li>
+                    <li>Causes: Muscle or ligament strain, bulging or ruptured disks, arthritis, skeletal irregularities.</li>
+                    <li>Treatment: Physical therapy, medications, rest, lifestyle modifications.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Scroll Animation -->
+    <script>
+        // Intersection Observer for fade-in on scroll
+        const cards = document.querySelectorAll('.disease-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.5s ease-out forwards';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => observer.observe(card));
+    </script>
+</body>
+</html>

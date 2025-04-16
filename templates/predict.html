@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Predictor</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #e2e8f0); /* Kept as is, no blue here */
+            color: #1f2937;
+            scroll-behavior: smooth;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #38bdf8, #0284c7); /* Sky blue gradient */
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar a {
+            color: #ffffff;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #e0f2fe; /* Sky-100 */
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0ea5e9; /* Sky-500 */
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #38bdf8, #0284c7); /* Sky blue gradient */
+            border-radius: 2px;
+        }
+
+        /* Symptom Box */
+        .symptom-box {
+            background: #ffffff;
+            border: 2px solid #e0f2fe; /* Sky-100 */
+            padding: 0.75rem 1rem;
+            margin: 0.5rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .selected-symptom {
+            background: #e0f2fe; /* Sky-100 */
+            border-color: #38bdf8; /* Sky-400 */
+            color: #0ea5e9; /* Sky-500 */
+            font-weight: 500;
+        }
+
+        .selected-symptom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .selected-symptom button {
+            background: transparent;
+            border: none;
+            color: #ef4444; /* Kept as red, no blue here */
+            font-size: 1.25rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .selected-symptom button:hover {
+            color: #dc2626; /* Kept as red, no blue here */
+        }
+
+        /* Suggestion Box */
+        .suggestion-box {
+            background: #ffffff;
+            border: 2px solid #e0f2fe; /* Sky-100 */
+            max-height: 200px;
+            overflow-y: auto;
+            position: absolute;
+            z-index: 1000;
+            width: 100%;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggestion-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .suggestion-item:hover {
+            background: #e0f2fe; /* Sky-100 */
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-danger {
+            background: #ef4444; /* Kept as red, no blue here */
+            color: #ffffff;
+        }
+
+        /* Prediction Box */
+        .prediction-box {
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .prediction-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .prediction-box h3, h4 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0ea5e9; /* Sky-500 */
+            background: #e0f2fe; /* Sky-100 */
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .prediction-box p, .prediction-box ul {
+            font-size: 1.125rem;
+            color: #374151; /* Kept as gray, no blue here */
+        }
+
+        .prediction-box ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .prediction-box a {
+            color: #38bdf8; /* Sky-400 */
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .prediction-box a:hover {
+            color: #0ea5e9; /* Sky-500 */
+        }
+
+        .precautions-box {
+            background: #e0f2fe; /* Sky-100 */
+        }
+
+        /* Search Input */
+        #symptom-search {
+            border: 2px solid #e0f2fe; /* Sky-100 */
+            padding: 0.75rem 1rem;
+            width: 100%;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.3s ease;
+        }
+
+        #symptom-search:focus {
+            border-color: #38bdf8; /* Sky-400 */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); /* Sky-400 with opacity */
+        }
+
+        /* Button */
+        .btn {
+            background: linear-gradient(90deg, #38bdf8, #0284c7); /* Sky blue gradient */
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: linear-gradient(90deg, #0ea5e9, #0369a1); /* Darker sky blue gradient */
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div>
+                <a href="#" class="text-white text-2xl font-bold">Health Cure</a>
+            </div>
+            <div>
+                <a href="/main" class="mr-4">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">Disease Predictor</h1>
+        <form method="POST" action="/predict" class="mt-6 fade-in">
+            <div class="relative mb-6">
+                <label for="symptoms" class="block text-lg font-medium mb-2 text-gray-700">Search and select your symptoms:</label>
+                <input type="text" id="symptom-search" class="form-input" placeholder="Start typing to search symptoms">
+                <div id="suggestions" class="suggestion-box hidden"></div>
+                <div id="selected-symptoms" class="mt-4 flex flex-wrap gap-2"></div>
+            </div>
+            <button type="submit" class="btn">Predict Disease</button>
+        </form>
+
+        {% if error %}
+            <div class="alert alert-danger mt-6 fade-in">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if prediction %}
+            <div class="prediction-box mt-6 fade-in">
+                <h3>Predicted Disease: {{ prediction }}</h3>
+                <p>{{ description }}</p>
+            </div>
+            <div class="prediction-box precautions-box mt-6 fade-in">
+                <h4>Drug Recommendation:</h4>
+                <ul class="list-disc ml-5">
+                    {% for drug in drugs %}
+                        <li>{{ drug }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="prediction-box mt-6 fade-in">
+                <h3>Suggested Doctor:</h3>
+                <p>
+                    <a href="{{ doctor_url }}" target="_blank">{{ doctor_name }}</a>
+                </p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#symptom-search').on('input', function() {
+                var query = $(this).val().toLowerCase();
+                $('#suggestions').empty().removeClass('hidden');
+
+                if (query) {
+                    $.ajax({
+                        url: '/get_symptoms',
+                        method: 'GET',
+                        data: { query: query },
+                        success: function(response) {
+                            var symptoms = response.symptoms;
+                            if (symptoms.length > 0) {
+                                symptoms.forEach(function(symptom) {
+                                    $('#suggestions').append('<div class="suggestion-item" data-symptom="' + symptom + '">' + symptom.replace(/_/g, ' ') + '</div>');
+                                });
+                            } else {
+                                $('#suggestions').append('<div class="suggestion-item">No suggestions found</div>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#suggestions').addClass('hidden');
+                }
+            });
+
+            $(document).on('click', '.suggestion-item', function() {
+                var symptom = $(this).data('symptom');
+                if (symptom && $('#selected-symptoms').find('[data-symptom="' + symptom + '"]').length == 0) {
+                    $('#selected-symptoms').append('<div class="symptom-box selected-symptom" data-symptom="' + symptom + '">' +
+                        '<input type="hidden" name="symptoms" value="' + symptom + '">' +
+                        '<span>' + symptom.replace(/_/g, ' ') + '</span>' +
+                        '<button type="button" class="remove-symptom">×</button>' +
+                        '</div>');
+                }
+                $('#suggestions').empty().addClass('hidden');
+                $('#symptom-search').val('');
+            });
+
+            $(document).on('click', '.remove-symptom', function() {
+                $(this).closest('.selected-symptom').remove();
+            });
+
+            $(document).click(function(e) {
+                if (!$(e.target).closest('#symptom-search').length && !$(e.target).closest('#suggestions').length) {
+                    $('#suggestions').addClass('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
