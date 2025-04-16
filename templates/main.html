@@ -570,10 +570,12 @@
         });
 
         // OpenRouter API configuration
-        const API_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
-        const API_KEY = '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'; // Your key
-        const YOUR_SITE_URL = 'https://final-year-project-4o2a.onrender.com'; // Match your local server
-        const YOUR_SITE_NAME = 'Healthcare Bot'; // Match your header
+        const API_CONFIG = {
+            API_KEY: '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', // Replace with a valid key if this is invalid
+            API_ENDPOINT: 'https://openrouter.ai/api/v1/chat/completions',
+            YOUR_SITE_URL: 'http://127.0.0.1:5000', // Update to match your hosted URL in production
+            YOUR_SITE_NAME: 'chatbot'
+        };
 
         // Static fallback responses for quick replies
         const fallbackResponses = {
@@ -583,90 +585,119 @@
             "hello": "Hi! How can I assist you with your health today?"
         };
 
-        // Send Message with OpenRouter API
-        async function sendMessage() {
-            const message = chatInput.value.trim();
-            if (message) {
-                // User message
-                const userMessage = document.createElement('div');
-                userMessage.className = 'chat-message user';
-                userMessage.textContent = message;
-                chatBody.appendChild(userMessage);
-
-                // Add loading indicator
-                const loadingMessage = document.createElement('div');
-                loadingMessage.className = 'chat-message bot';
-                loadingMessage.textContent = 'Thinking...';
-                chatBody.appendChild(loadingMessage);
-                chatBody.scrollTop = chatBody.scrollHeight;
-
-                // Check for quick fallback response
-                const lowerMessage = message.toLowerCase();
-                if (fallbackResponses[lowerMessage]) {
-                    setTimeout(() => { // Simulate instant response
-                        loadingMessage.remove();
-                        const botMessage = document.createElement('div');
-                        botMessage.className = 'chat-message bot';
-                        botMessage.textContent = fallbackResponses[lowerMessage];
-                        chatBody.appendChild(botMessage);
-                        chatBody.scrollTop = chatBody.scrollHeight;
-                    }, 100); // Minimal delay for smoothness
-                } else {
-                    try {
-                        // Use a faster model (e.g., LLaMA 3.1 8B Instruct)
-                        const response = await fetch(API_ENDPOINT, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${API_KEY}`,
-                                'HTTP-Referer': YOUR_SITE_URL,
-                                'X-Title': YOUR_SITE_NAME
-                            },
-                            body: JSON.stringify({
-                                model: 'meta-llama/llama-3.1-8b-instruct:free', // Faster, free model
-                                messages: [
-                                    {
-                                        role: 'system',
-                                        content: 'You are a health chatbot. Provide helpful and accurate responses to user queries about health.'
-                                    },
-                                    {
-                                        role: 'user',
-                                        content: message // Simplified payload
-                                    }
-                                ],
-                                max_tokens: 200 // Limit response length for speed
-                            })
-                        });
-
-                        if (!response.ok) {
-                            const errorData = await response.json();
-                            throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
-                        }
-
-                        const data = await response.json();
-                        const botReply = data.choices[0].message.content || 'Sorry, I couldn’t process that.';
-
-                        // Remove loading and show response
-                        loadingMessage.remove();
-                        const botMessage = document.createElement('div');
-                        botMessage.className = 'chat-message bot';
-                        botMessage.textContent = botReply;
-                        chatBody.appendChild(botMessage);
-                    } catch (error) {
-                        loadingMessage.remove();
-                        const botMessage = document.createElement('div');
-                        botMessage.className = 'chat-message bot';
-                        botMessage.textContent = fallbackResponses[lowerMessage] || `Sorry, something went wrong: ${error.message}.`;
-                        chatBody.appendChild(botMessage);
-                        console.error('Error:', error);
-                    }
+        // Reusable function to make API call
+        async function makeApiCall(message) {
+            try {
+                // Validate API configuration
+                if (!API_CONFIG.API_KEY) {
+                    throw new Error('API key is not configured');
+                }
+                if (!API_CONFIG.API_ENDPOINT) {
+                    throw new Error('API endpoint is not configured');
+                }
+                if (!API_CONFIG.YOUR_SITE_URL || !API_CONFIG.YOUR_SITE_NAME) {
+                    throw new Error('Site URL or name is not configured');
                 }
 
-                chatInput.value = '';
-                chatBody.scrollTop = chatBody.scrollHeight; // Scroll to bottom
+                // Prepare payload
+                const payload = {
+                    model: 'meta-llama/llama-3.1-8b-instruct:free',
+                    messages: [
+                        {
+                            role: 'system',
+                            content: 'You are a health chatbot. Provide helpful and accurate responses to user queries about health.'
+                        },
+                        {
+                            role: 'user',
+                            content: message
+                        }
+                    ],
+                    max_tokens: 200 // Limit for faster response
+                };
+
+                // Make API request
+                const response = await fetch(API_CONFIG.API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_CONFIG.API_KEY}`,
+                        'HTTP-Referer': API_CONFIG.YOUR_SITE_URL,
+                        'X-Title': API_CONFIG.YOUR_SITE_NAME
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                // Check response status
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed: Invalid or missing credentials');
+                    }
+                    throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+                }
+
+                // Parse response
+                const data = await response.json();
+                return data.choices[0].message.content || 'Sorry, I couldn’t process that.';
+            } catch (error) {
+                console.error('API call failed:', error.message);
+                throw error;
             }
         }
 
+        // Send Message
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Display user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'chat-message user';
+            userMessage.textContent = message;
+            chatBody.appendChild(userMessage);
+
+            // Add loading indicator
+            const loadingMessage = document.createElement('div');
+            loadingMessage.className = 'chat-message bot';
+            loadingMessage.textContent = 'Thinking...';
+            chatBody.appendChild(loadingMessage);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Check for fallback response
+            const lowerMessage = message.toLowerCase();
+            if (fallbackResponses[lowerMessage]) {
+                setTimeout(() => {
+                    loadingMessage.remove();
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'chat-message bot';
+                    botMessage.textContent = fallbackResponses[lowerMessage];
+                    chatBody.appendChild(botMessage);
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                }, 100); // Minimal delay for smoothness
+            } else {
+                try {
+                    // Call API
+                    const botReply = await makeApiCall(message);
+                    loadingMessage.remove();
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'chat-message bot';
+                    botMessage.textContent = botReply;
+                    chatBody.appendChild(botMessage);
+                } catch (error) {
+                    loadingMessage.remove();
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'chat-message bot';
+                    botMessage.textContent = fallbackResponses[lowerMessage] || `Sorry, something went wrong: ${error.message}. Please try again.`;
+                    chatBody.appendChild(botMessage);
+                }
+            }
+
+            // Clear input and scroll
+            chatInput.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Event listeners for sending messages
         sendBtn.addEventListener('click', sendMessage);
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
