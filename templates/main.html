@@ -571,10 +571,10 @@
 
         // OpenRouter API configuration
         const API_CONFIG = {
-            API_KEY: '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', // Replace with a valid key if this is invalid
+            API_KEY: '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', // Replace with a valid key if this is invalid
             API_ENDPOINT: 'https://openrouter.ai/api/v1/chat/completions',
             YOUR_SITE_URL: 'http://127.0.0.1:5000', // Update to match your hosted URL in production
-            YOUR_SITE_NAME: 'healthbot'
+            YOUR_SITE_NAME: 'health_bot'
         };
 
         // Static fallback responses for quick replies
@@ -601,7 +601,7 @@
 
                 // Prepare payload
                 const payload = {
-                    model: 'meta-llama/llama-3.1-8b-instruct:free',
+                    model: 'meta-llama/llama-4-maverick:free',
                     messages: [
                         {
                             role: 'system',
@@ -612,7 +612,7 @@
                             content: message
                         }
                     ],
-                    max_tokens: 200 // Limit for faster response
+                    max_tokens: 10000 // Limit for faster response
                 };
 
                 // Make API request
