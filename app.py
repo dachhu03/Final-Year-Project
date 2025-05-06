@@ -246,8 +246,7 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
-
-API_KEY = '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'
+API_KEY = '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'
 API_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
 
 @app.route('/api/chat', methods=['POST'])
@@ -265,7 +264,7 @@ def chat():
         "Content-Type": "application/json",
         "Authorization": f"Bearer {API_KEY}",
         "HTTP-Referer": "https://final-year-project-4o2a.onrender.com",
-        "X-Title": "health_bot"
+        "X-Title": "chatbot"
     }
     try:
         res = requests.post(API_ENDPOINT, json=payload, headers=headers)
