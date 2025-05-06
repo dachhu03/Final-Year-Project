@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 import pandas as pd
 import requests
 import os
+import json
 from dotenv import load_dotenv
 load_dotenv()   
 from sklearn.preprocessing import LabelEncoder
@@ -249,30 +250,43 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 API_KEY = os.getenv('OPENROUTER_API_KEY')
-API_ENDPOINT = os.getenv('API_ENDPOINT')
 REFERER = os.getenv('HTTP_REFERER')
 TITLE = os.getenv('X_TITLE')
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
+    # Get the user message from the incoming JSON request
     user_message = request.json.get('message')
+
+    # Prepare the data to be sent to OpenRouter API
     payload = {
         "model": "meta-llama/llama-3.3-70b-instruct:free",
         "messages": [
-            {"role": "system", "content": "You are a health chatbot."},
             {"role": "user", "content": user_message}
-        ],
-        "max_tokens": 1000
+        ]
     }
+
+    # Headers for the API request
     headers = {
-        "Content-Type": "application/json",
         "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json",
         "HTTP-Referer": REFERER,
         "X-Title": TITLE
     }
+
+    # Send the data to OpenRouter API and handle the response
     try:
-        res = requests.post(API_ENDPOINT, json=payload, headers=headers)
-        res.raise_for_status()
-        return jsonify(res.json())
+        response = requests.post(
+            url="https://openrouter.ai/api/v1/chat/completions",
+            headers=headers,
+            data=json.dumps(payload)
+        )
+        # Check if the request was successful
+        response.raise_for_status()
+
+        # Return the API response content to the user
+        return jsonify(response.json())
+    
     except requests.RequestException as e:
+        # Handle errors and return the error message
         return jsonify({"error": str(e)}), 500
