@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 import pandas as pd
+import requests
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 
@@ -243,3 +244,32 @@ def first_aid_tips():
 if __name__ == "__main__":
     create_tables()
     app.run(debug=True)
+
+
+
+API_KEY = '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'
+API_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    user_message = request.json.get('message')
+    payload = {
+        "model": "meta-llama/llama-3.3-70b-instruct:free",
+        "messages": [
+            {"role": "system", "content": "You are a health chatbot."},
+            {"role": "user", "content": user_message}
+        ],
+        "max_tokens": 1000
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {API_KEY}",
+        "HTTP-Referer": "https://final-year-project-4o2a.onrender.com",
+        "X-Title": "health_bot"
+    }
+    try:
+        res = requests.post(API_ENDPOINT, json=payload, headers=headers)
+        res.raise_for_status()
+        return jsonify(res.json())
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 500

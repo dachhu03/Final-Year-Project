@@ -514,194 +514,149 @@
 
     <!-- JavaScript -->
     <script>
-        // Menu Toggle
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+      
+    // Menu Toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
 
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('open');
-        });
+    menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+    });
 
-        // Edit Form Toggle
-        function toggleEditForm() {
-            const form = document.getElementById('editForm');
-            form.classList.toggle('hidden');
+    // Edit Form Toggle
+    function toggleEditForm() {
+        const form = document.getElementById('editForm');
+        form.classList.toggle('hidden');
+    }
+
+    // Header Scroll Animation
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
         }
+    });
 
-        // Header Scroll Animation
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
+    // Fade-in on Scroll
+    const fadeIns = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationDelay = `${Math.random() * 0.3}s`;
+                entry.target.classList.add('fade-in');
+                observer.unobserve(entry.target);
             }
         });
+    }, { threshold: 0.1 });
 
-        // Fade-in on Scroll
-        const fadeIns = document.querySelectorAll('.fade-in');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationDelay = `${Math.random() * 0.3}s`;
-                    entry.target.classList.add('fade-in');
-                    observer.unobserve(entry.target);
-                }
+    fadeIns.forEach(element => observer.observe(element));
+
+    // Chatbot Functionality
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatPopup = document.getElementById('chat-popup');
+    const closeChat = document.getElementById('close-chat');
+    const chatBody = document.getElementById('chat-body');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    // Toggle Chat Popup
+    chatToggle.addEventListener('click', () => {
+        chatPopup.classList.toggle('open');
+    });
+
+    closeChat.addEventListener('click', () => {
+        chatPopup.classList.remove('open');
+    });
+
+    // Static fallback responses
+    const fallbackResponses = {
+        "hi im feeling sick": "I’m sorry to hear that. Can you describe your symptoms?",
+        "headache": "Try resting and drinking water. Consult a doctor if it persists.",
+        "fever": "Rest, stay hydrated, and monitor your temperature. Seek medical help if it exceeds 100.4°F (38°C).",
+        "hello": "Hi! How can I assist you with your health today?"
+    };
+
+    // Updated API call (no direct OpenRouter key exposed)
+    async function makeApiCall(message) {
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
             });
-        }, { threshold: 0.1 });
 
-        fadeIns.forEach(element => observer.observe(element));
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `API request failed with status ${response.status}`);
+            }
 
-        // Chatbot Functionality
-        const chatToggle = document.getElementById('chat-toggle');
-        const chatPopup = document.getElementById('chat-popup');
-        const closeChat = document.getElementById('close-chat');
-        const chatBody = document.getElementById('chat-body');
-        const chatInput = document.getElementById('chat-input');
-        const sendBtn = document.getElementById('send-btn');
+            const data = await response.json();
+            return data.choices[0].message.content || 'Sorry, I couldn’t process that.';
+        } catch (error) {
+            console.error('API call failed:', error.message);
+            throw error;
+        }
+    }
 
-        // Toggle Chat Popup
-        chatToggle.addEventListener('click', () => {
-            chatPopup.classList.toggle('open');
-        });
+    // Send Message
+    async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
 
-        closeChat.addEventListener('click', () => {
-            chatPopup.classList.remove('open');
-        });
+        // Display user message
+        const userMessage = document.createElement('div');
+        userMessage.className = 'chat-message user';
+        userMessage.textContent = message;
+        chatBody.appendChild(userMessage);
 
-        // OpenRouter API configuration
-        const API_CONFIG = {
-            API_KEY: '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', // Replace with a valid key if this is invalid
-            API_ENDPOINT: 'https://openrouter.ai/api/v1/chat/completions',
-            YOUR_SITE_URL: 'http://127.0.0.1:5000', // Update to match your hosted URL in production
-            YOUR_SITE_NAME: 'health_bot'
-        };
+        // Add loading indicator
+        const loadingMessage = document.createElement('div');
+        loadingMessage.className = 'chat-message bot';
+        loadingMessage.textContent = 'Thinking...';
+        chatBody.appendChild(loadingMessage);
+        chatBody.scrollTop = chatBody.scrollHeight;
 
-        // Static fallback responses for quick replies
-        const fallbackResponses = {
-            "hi im feeling sick": "I’m sorry to hear that. Can you describe your symptoms?",
-            "headache": "Try resting and drinking water. Consult a doctor if it persists.",
-            "fever": "Rest, stay hydrated, and monitor your temperature. Seek medical help if it exceeds 100.4°F (38°C).",
-            "hello": "Hi! How can I assist you with your health today?"
-        };
-
-        // Reusable function to make API call
-        async function makeApiCall(message) {
+        // Check for fallback response
+        const lowerMessage = message.toLowerCase();
+        if (fallbackResponses[lowerMessage]) {
+            setTimeout(() => {
+                loadingMessage.remove();
+                const botMessage = document.createElement('div');
+                botMessage.className = 'chat-message bot';
+                botMessage.textContent = fallbackResponses[lowerMessage];
+                chatBody.appendChild(botMessage);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 100);
+        } else {
             try {
-                // Validate API configuration
-                if (!API_CONFIG.API_KEY) {
-                    throw new Error('API key is not configured');
-                }
-                if (!API_CONFIG.API_ENDPOINT) {
-                    throw new Error('API endpoint is not configured');
-                }
-                if (!API_CONFIG.YOUR_SITE_URL || !API_CONFIG.YOUR_SITE_NAME) {
-                    throw new Error('Site URL or name is not configured');
-                }
-
-                // Prepare payload
-                const payload = {
-                    model: 'meta-llama/llama-4-maverick:free',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: 'You are a health chatbot. Provide helpful and accurate responses to user queries about health.'
-                        },
-                        {
-                            role: 'user',
-                            content: message
-                        }
-                    ],
-                    max_tokens: 10000 // Limit for faster response
-                };
-
-                // Make API request
-                const response = await fetch(API_CONFIG.API_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_CONFIG.API_KEY}`,
-                        'HTTP-Referer': API_CONFIG.YOUR_SITE_URL,
-                        'X-Title': API_CONFIG.YOUR_SITE_NAME
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                // Check response status
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    if (response.status === 401) {
-                        throw new Error('Authentication failed: Invalid or missing credentials');
-                    }
-                    throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
-                }
-
-                // Parse response
-                const data = await response.json();
-                return data.choices[0].message.content || 'Sorry, I couldn’t process that.';
+                const botReply = await makeApiCall(message);
+                loadingMessage.remove();
+                const botMessage = document.createElement('div');
+                botMessage.className = 'chat-message bot';
+                botMessage.textContent = botReply;
+                chatBody.appendChild(botMessage);
             } catch (error) {
-                console.error('API call failed:', error.message);
-                throw error;
+                loadingMessage.remove();
+                const botMessage = document.createElement('div');
+                botMessage.className = 'chat-message bot';
+                botMessage.textContent = fallbackResponses[lowerMessage] || `Sorry, something went wrong: ${error.message}. Please try again.`;
+                chatBody.appendChild(botMessage);
             }
         }
 
-        // Send Message
-        async function sendMessage() {
-            const message = chatInput.value.trim();
-            if (!message) return;
+        chatInput.value = '';
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
 
-            // Display user message
-            const userMessage = document.createElement('div');
-            userMessage.className = 'chat-message user';
-            userMessage.textContent = message;
-            chatBody.appendChild(userMessage);
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
 
-            // Add loading indicator
-            const loadingMessage = document.createElement('div');
-            loadingMessage.className = 'chat-message bot';
-            loadingMessage.textContent = 'Thinking...';
-            chatBody.appendChild(loadingMessage);
-            chatBody.scrollTop = chatBody.scrollHeight;
 
-            // Check for fallback response
-            const lowerMessage = message.toLowerCase();
-            if (fallbackResponses[lowerMessage]) {
-                setTimeout(() => {
-                    loadingMessage.remove();
-                    const botMessage = document.createElement('div');
-                    botMessage.className = 'chat-message bot';
-                    botMessage.textContent = fallbackResponses[lowerMessage];
-                    chatBody.appendChild(botMessage);
-                    chatBody.scrollTop = chatBody.scrollHeight;
-                }, 100); // Minimal delay for smoothness
-            } else {
-                try {
-                    // Call API
-                    const botReply = await makeApiCall(message);
-                    loadingMessage.remove();
-                    const botMessage = document.createElement('div');
-                    botMessage.className = 'chat-message bot';
-                    botMessage.textContent = botReply;
-                    chatBody.appendChild(botMessage);
-                } catch (error) {
-                    loadingMessage.remove();
-                    const botMessage = document.createElement('div');
-                    botMessage.className = 'chat-message bot';
-                    botMessage.textContent = fallbackResponses[lowerMessage] || `Sorry, something went wrong: ${error.message}. Please try again.`;
-                    chatBody.appendChild(botMessage);
-                }
-            }
-
-            // Clear input and scroll
-            chatInput.value = '';
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
-
-        // Event listeners for sending messages
-        sendBtn.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
     </script>
 </body>
 
