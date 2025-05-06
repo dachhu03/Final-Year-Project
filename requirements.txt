@@ -56,6 +56,7 @@ pydantic_core==2.27.2
 pyparsing==3.2.1
 python-crontab==3.2.0
 python-dateutil==2.9.0.post0
+python-dotenv==1.1.0
 pytz==2024.2
 redis==5.2.1
 requests==2.32.3

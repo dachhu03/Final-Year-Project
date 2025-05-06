@@ -3,6 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 import pandas as pd
 import requests
+import os
+from dotenv import load_dotenv
+load_dotenv()   
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 
@@ -245,9 +248,10 @@ if __name__ == "__main__":
     create_tables()
     app.run(debug=True)
 
-
-API_KEY = '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'
-API_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
+API_KEY = os.getenv('OPENROUTER_API_KEY')
+API_ENDPOINT = os.getenv('API_ENDPOINT')
+REFERER = os.getenv('HTTP_REFERER')
+TITLE = os.getenv('X_TITLE')
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
@@ -263,8 +267,8 @@ def chat():
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {API_KEY}",
-        "HTTP-Referer": "https://final-year-project-4o2a.onrender.com",
-        "X-Title": "chatbot"
+        "HTTP-Referer": REFERER,
+        "X-Title": TITLE
     }
     try:
         res = requests.post(API_ENDPOINT, json=payload, headers=headers)
